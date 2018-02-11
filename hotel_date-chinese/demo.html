@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html dir="ltr" lang="en-US">
+   <head>
+      <meta charset="UTF-8" />
+      <title>酒店日期预定</title>
+      <link href="bootstrap.min.css" rel="stylesheet">
+      <link rel="stylesheet" type="text/css" media="all" href="daterangepicker.css" />
+      <script type="text/javascript" src="jquery-3.3.1.js"></script>
+      <script type="text/javascript" src="bootstrap.min.js"></script>
+      <script type="text/javascript" src="moment.js"></script>
+      <script type="text/javascript" src="daterangepicker.js"></script>
+   </head>
+   <body style="margin: 60px 0">
+      <div class="container">
+        <div class="row">
+<!------------------------  -->
+          <div class="col-md-4 col-md-offset-2 demo">
+            <h4>Your Date Range Picker</h4>
+            <input type="text" id="config-demo" class="form-control1" readonly>
+          </div>  
+        </div>
+      </div>
+      <style type="text/css">
+      .demo { position: relative; }
+      .demo i {
+        position: absolute; bottom: 10px; right: 24px; top: auto; cursor: pointer;
+      }
+	  .form-control1{
+	    width:300px;
+		cursor:pointer;
+		background:white;
+		border:1px solid orange;
+		outline:0;
+		height:35px;
+		border-radius:9px;
+		text-align:center;
+		line-height:35px;
+	  }
+	  .form-control1:visited{
+	   box-shadow:0 0 0 1px orange;
+	  }
+      </style>
+      <script type="text/javascript">
+        //-------------------------需要的api
+        var options={};
+		//if ($('#locale').is(':checked')) {
+            //$('#rtl-wrap').show();
+            options.locale = {
+			  startDate: moment(),
+              direction: $('#rtl').is(':checked') ? 'rtl' : 'ltr',
+              format: 'YYYY-MM-DD(d)',
+              separator: ' 到 ',
+              applyLabel: '确定',
+              cancelLabel: '取消',
+              fromLabel: 'From',
+              toLabel: 'To',
+              customRangeLabel: 'Custom',
+              daysOfWeek: ['日', '一', '二', '三', '四', '五','六'],
+              monthNames: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+              firstDay:1
+            };
+            options.linkedCalendars = true;
+            options.autoUpdateInput = true;
+            options.showCustomRangeLabel = true;
+			options.startDate=moment();
+			options.endDate=moment().subtract(-1, 'days');
+			options.minDate=moment();
+          $('#config-demo').daterangepicker(options, function(start, end, label) { 
+			  console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');  
+		   });
+      </script>
+   </body>
+</html>
