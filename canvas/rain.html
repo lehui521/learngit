@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+  <style>
+    canvas{
+	  background:black;
+	}
+  </style>
+ </head>
+ <body>
+  <canvas id="canvas">
+     您的浏览器不支持
+  </canvas>	
+  <script>
+     var can=document.getElementById("canvas");
+	 var ctx=can.getContext("2d");
+	 //兼容浏览器
+	 window.requestAnimationFrame =  (function(){
+			return requestAnimationFrame || webkitRequestAnimationFrame || mozRequestAnimationFrame || oRequestAnimationFrame || msRequestAnimationFrame || function (callback) {setTimeout(callback, 1000 / 60); };
+		})();
+	 //console.log(can);
+     var h=can.height=window.innerHeight;
+	 var w=can.width=window.innerWidth;
+	 //让画布的宽和高跟随浏览器的窗口变化而变化
+	 window.onresize=function(){
+	    w=can.width=window.innerWidth;
+		h=can.height=window.innerHeight;
+	 }
+	 
+       var drops=[];//定义雨滴数的数组
+	   var Drop=function(){};//定义构造函数
+	   //添加对象方法
+	   Drop.prototype={
+	      init:function(){
+		    //设置每个水滴的初始属性
+			this.x=random(0,w);
+			this.y=0;
+			//y方向的速度值
+			this.vy=random(4,5);
+			//雨滴下落的最大高度
+			this.l=random(0.8*h,0.9*h);
+			//波纹的半径
+			//this.r=1;
+			this.vr=1; //半径增大的速度
+			this.a=1; //雨滴的变大的透明度
+			this.va=0.96;  //透明度更改的频率
+			this.la=1;
+			this.da=0.5;
+		  },
+		  draw:function(){
+			if(this.y>this.l){
+				//绘制椭圆
+			    var x=this.x,
+				    y=this.y,
+				    a=this.la,
+				    b=this.da;
+				ctx.save();
+				var r = (a > b) ? a : b;
+				var ratioX = a / r;
+				var ratioY = b / r;
+				ctx.scale(ratioX, ratioY);
+				ctx.beginPath();
+				ctx.arc(x / ratioX, y / ratioY, r, 0, 2 * Math.PI, false);
+				ctx.closePath();
+				ctx.restore();
+				ctx.strokeStyle="rgba(0,255,255,"+this.a+")";
+				ctx.stroke();
+	          //绘制圆形
+			  /*ctx.beginPath();//先开始路径
+			  ctx.arc(this.x,this.y,this.r,0,Math.PI*2,false);
+			  ctx.strokeStyle="rgba(0,255,255,"+this.a+")";
+			  ctx.stroke();*/
+			}else{
+			  ctx.fillStyle="rgb(0,255,255)";
+			  ctx.fillRect(this.x,this.y,4,10);
+			}
+		    this.update();  //每绘制完就更新坐标
+		  },
+		  update:function(){
+		    //更新坐标位置
+			if(this.y<this.l){
+			  this.y+=this.vy;
+			}else{
+				if(this.a>0.03){
+				//雨滴到达的位置开始绘制圆
+                  this.la+=this.vr; //椭圆的长轴
+                  this.da+=0.3;  //椭圆的短轴
+				  if(this.la>50){
+				    this.a*=this.va;//更改透明度
+				  }
+				}else{
+				  this.init();
+				}
+			}
+		  }
+	   }
+	 //新建雨滴实例化对象
+//	 var drop=new Drop();
+//	 drop.init();//初始化
+//	 drop.draw();
+     for(var i=0;i<30;i++){
+        setTimeout(function(){
+		  var drop=new Drop();
+		  drop.init();
+	      drops.push(drop);
+		},i*200);
+	 }
+	 function move(){
+	   //ctx.clearRect(0,0,w,h);//清除画布
+	   ctx.fillStyle="rgba(0,0,0,0.1)";//阴影
+	   ctx.fillRect(0,0,w,h);
+	   for(var i=0;i<drops.length;i++){
+	    drops[i].draw();
+	   }
+	   requestAnimationFrame(move);
+	 }
+	 move();
+	 //生成随机数的方法
+	 function random(min,max){
+		return Math.random()*(max-min)+min;
+	 }
+  </script>
+ </body>
+</html>
